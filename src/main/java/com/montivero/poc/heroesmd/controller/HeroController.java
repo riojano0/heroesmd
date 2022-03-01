@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,6 +40,7 @@ public class HeroController {
 
    @LogTimed
    @GetMapping("/all")
+   @Cacheable("cache-by-seconds")
    public List<HeroResponse> getAllHeroes() {
       return heroService.getAllHeroes();
    }
@@ -46,6 +48,7 @@ public class HeroController {
 
    @LogTimed
    @GetMapping
+   @Cacheable("cache-by-seconds")
    public ResponseEntity<HeroResponse> getHero(@RequestParam(value = "id") Long id) {
       Optional<HeroResponse> heroByIdOptional = heroService.getHeroById(id);
       return heroByIdOptional
@@ -55,6 +58,7 @@ public class HeroController {
 
    @LogTimed
    @GetMapping("/page")
+   @Cacheable("cache-by-seconds")
    public PageContainer<HeroResponse> getAllHeroesSlice(
          @RequestParam(value = "page", defaultValue = "0") Integer page,
          @RequestParam(value = "size", defaultValue = "10") Integer size,
@@ -65,6 +69,7 @@ public class HeroController {
 
    @LogTimed
    @GetMapping("/search")
+   @Cacheable("cache-by-seconds")
    public PageContainer<HeroResponse> searchHeroes(
          @RequestParam(value = "q") String query,
          @RequestParam(value = "page", defaultValue = "0") Integer page,
