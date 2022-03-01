@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 import com.montivero.poc.heroesmd.domain.api.HeroRequest;
+import com.montivero.poc.heroesmd.domain.api.HeroResponse;
 import com.montivero.poc.heroesmd.domain.api.Skill;
 import com.montivero.poc.heroesmd.domain.entity.HeroEntity;
 import com.montivero.poc.heroesmd.domain.entity.SkillEntity;
@@ -25,7 +26,7 @@ class HeroMapperTest {
             .description("b")
             .imageUrl("c")
             .realName("d")
-            .skills(Collections.singletonList(new Skill("x", "y")))
+            .skills(Collections.singletonList(new Skill(1L, "x", "y")))
             .build();
 
       HeroEntity heroEntity = HeroMapper.INSTANCE.toEntity(heroRequest);
@@ -37,6 +38,34 @@ class HeroMapperTest {
       assertThat(heroEntity.getRealName(), is("d"));
       List<SkillEntity> skills = heroEntity.getSkills();
       assertThat(skills, hasSize(1));
+      assertThat(skills.get(0).getId(), is(1L));
+      assertThat(skills.get(0).getName(), is("x"));
+      assertThat(skills.get(0).getDescription(), is("y"));
+   }
+
+   @Test
+   void shouldConvertToResponse() {
+      SkillEntity skillEntity = new SkillEntity( "x", "y", null);
+      skillEntity.setId(1L);
+      HeroEntity heroEntity = HeroEntity
+            .builder()
+            .name("a")
+            .description("b")
+            .imageUrl("c")
+            .realName("d")
+            .skills(Collections.singletonList(skillEntity))
+            .build();
+
+      HeroResponse heroResponse = HeroMapper.INSTANCE.toResponse(heroEntity);
+
+      assertThat(heroResponse.getId(), nullValue());
+      assertThat(heroResponse.getName(), is("a"));
+      assertThat(heroResponse.getDescription(), is("b"));
+      assertThat(heroResponse.getImageUrl(), is("c"));
+      assertThat(heroResponse.getRealName(), is("d"));
+      List<Skill> skills = heroResponse.getSkills();
+      assertThat(skills, hasSize(1));
+      assertThat(skills.get(0).getId(), is(1L));
       assertThat(skills.get(0).getName(), is("x"));
       assertThat(skills.get(0).getDescription(), is("y"));
    }

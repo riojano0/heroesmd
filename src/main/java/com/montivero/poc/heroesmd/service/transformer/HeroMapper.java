@@ -6,6 +6,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 import com.montivero.poc.heroesmd.domain.api.HeroRequest;
+import com.montivero.poc.heroesmd.domain.api.HeroResponse;
 import com.montivero.poc.heroesmd.domain.api.Skill;
 import com.montivero.poc.heroesmd.domain.entity.HeroEntity;
 import com.montivero.poc.heroesmd.domain.entity.SkillEntity;
@@ -19,4 +20,9 @@ public interface HeroMapper {
 
    List<SkillEntity> toEntity(List<Skill> skill);
 
+   HeroResponse toResponse(HeroEntity heroEntity);
+
+   List<Skill> toResponse(List<SkillEntity> skillEntities);
+
+   Skill toResponse(SkillEntity skillEntity);
 }
