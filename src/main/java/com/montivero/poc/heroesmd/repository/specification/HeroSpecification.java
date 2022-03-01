@@ -43,4 +43,8 @@ public class HeroSpecification implements Specification<HeroEntity> {
 
       return null;
    }
+
+   public SearchCriteria getSearchCriteria() {
+      return searchCriteria;
+   }
 }
