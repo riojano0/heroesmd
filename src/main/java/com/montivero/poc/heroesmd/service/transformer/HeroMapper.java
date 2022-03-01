@@ -18,11 +18,39 @@ public interface HeroMapper {
 
    HeroEntity toEntity(HeroRequest heroRequest);
 
-   List<SkillEntity> toEntity(List<Skill> skill);
-
    HeroResponse toResponse(HeroEntity heroEntity);
 
-   List<Skill> toResponse(List<SkillEntity> skillEntities);
+   // Need for inner deserialization
+   List<SkillEntity> toSkillEntityList(List<Skill> skill);
 
-   Skill toResponse(SkillEntity skillEntity);
+   // Give implementation to avoid issue on library
+   default SkillEntity toSkillEntity(Skill skill) {
+      if ( skill == null ) {
+         return null;
+      }
+
+      SkillEntity skillEntity = new SkillEntity();
+      skillEntity.setId(skill.getId());
+      skillEntity.setName(skill.getName());
+      skillEntity.setDescription(skill.getDescription());
+
+      return skillEntity;
+   };
+
+   // Need for inner deserialization
+   List<Skill> toSkillResponseList(List<SkillEntity> skillEntities);
+
+   // Give implementation to avoid issue on library
+   default Skill toSkillResponse(SkillEntity skillEntity) {
+      if ( skillEntity == null ) {
+         return null;
+      }
+
+      Skill skill = new Skill();
+      skill.setId(skillEntity.getId());
+      skill.setName(skillEntity.getName());
+      skill.setDescription(skillEntity.getDescription());
+
+      return skill;
+   };
 }

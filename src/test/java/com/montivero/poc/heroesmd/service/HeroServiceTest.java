@@ -139,8 +139,7 @@ class HeroServiceTest {
                                            .name("M0")
                                            .skills(skills)
                                            .build();
-      SkillEntity skillEntityFly = new SkillEntity("Fly", "Flying", null);
-      skillEntityFly.setId(99L);
+      SkillEntity skillEntityFly = new SkillEntity(99L, "Fly", "Flying", null);
 
       when(skillRepositoryMock.findByNameIgnoreCase("fly")).thenReturn(Optional.of(skillEntityFly));
       when(skillRepositoryMock.findByNameIgnoreCase("Walk")).thenReturn(Optional.empty());

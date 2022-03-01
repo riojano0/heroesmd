@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
+import java.time.Instant;
 import java.util.Map;
 
 import io.restassured.RestAssured;
@@ -13,7 +14,10 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.TestPropertySource;
@@ -25,6 +29,7 @@ import com.montivero.poc.heroesmd.domain.api.HeroResponse;
    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @TestPropertySource(locations = "classpath:application-test.properties")
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class HeroControllerIntegrationTest {
 
    @LocalServerPort
@@ -41,6 +46,7 @@ public class HeroControllerIntegrationTest {
       RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(LogDetail.BODY);
    }
 
+   @Order(1)
    @Test
    void shouldGetAllHeroes() {
       Response response = RestAssured
@@ -60,6 +66,7 @@ public class HeroControllerIntegrationTest {
       assertThat(heroResponses[1].getName(), is("JavieronTest"));
    }
 
+   @Order(2)
    @Test
    void shouldCreateHero() {
       HeroRequest heroRequest = new HeroRequest();
@@ -82,10 +89,11 @@ public class HeroControllerIntegrationTest {
       assertThat(heroResponses.getName(), is("NewHero"));
    }
 
+   @Order(3)
    @Test
    void shouldDeleteHeroCreatedHero() {
       HeroRequest heroRequest = new HeroRequest();
-      heroRequest.setName("NewHero");
+      heroRequest.setName("NewHero" + Instant.now());
 
       Response preResponse = RestAssured
             .given(requestSpecification)

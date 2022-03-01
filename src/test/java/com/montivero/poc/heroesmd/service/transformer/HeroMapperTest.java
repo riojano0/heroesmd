@@ -45,8 +45,7 @@ class HeroMapperTest {
 
    @Test
    void shouldConvertToResponse() {
-      SkillEntity skillEntity = new SkillEntity( "x", "y", null);
-      skillEntity.setId(1L);
+      SkillEntity skillEntity = new SkillEntity(1L, "x", "y", null);
       HeroEntity heroEntity = HeroEntity
             .builder()
             .name("a")
