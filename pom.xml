@@ -10,12 +10,14 @@
 	</parent>
 	<groupId>com.montivero.poc</groupId>
 	<artifactId>heroesmd</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1-SNAPSHOT</version>
 	<name>Heroes MD</name>
 	<description>Mindata task</description>
+	<packaging>jar</packaging>
 
 	<properties>
 		<java.version>11</java.version>
+		<start-class>com.montivero.poc.heroesmd.HeroesMdApplication</start-class>
 		<!--	Libs  	-->
 		<common.lang3.version>3.12.0</common.lang3.version>
 		<common.collection4.version>4.4</common.collection4.version>
@@ -134,23 +136,12 @@
 	</dependencies>
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>spring-boot-maven-plugin</artifactId>
-					<version>${project.parent.version}</version>
-					<configuration>
-						<excludes>
-							<exclude>
-								<groupId>org.projectlombok</groupId>
-								<artifactId>lombok</artifactId>
-							</exclude>
-						</excludes>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
 	</build>
 
 </project>

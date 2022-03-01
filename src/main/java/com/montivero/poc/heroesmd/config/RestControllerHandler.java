@@ -12,6 +12,7 @@ import org.apache.commons.collections4.ListUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -33,7 +34,8 @@ public class RestControllerHandler extends ResponseEntityExceptionHandler  {
    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
       log.error(ex.getMessage(), ex);
 
-      List<FieldError> fieldErrors = ex.getFieldErrors();
+      BindingResult bindingResult = ex.getBindingResult();
+      List<FieldError> fieldErrors = bindingResult.getFieldErrors();
       List<ErrorFieldResponse> fieldResponses = ListUtils
             .emptyIfNull(fieldErrors)
             .stream()
@@ -79,7 +81,7 @@ public class RestControllerHandler extends ResponseEntityExceptionHandler  {
                                          .internalCode(Objects.toString(ex.getErrorCode()))
                                          .build();
 
-      return ResponseEntity.internalServerError().body(build);
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(build);
    }
 
 }
