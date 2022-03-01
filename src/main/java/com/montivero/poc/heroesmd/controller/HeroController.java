@@ -92,7 +92,7 @@ public class HeroController {
       boolean deleteHero = heroService.deleteHero(id);
 
       Map<String, Boolean> result = new HashMap<>();
-      result.put("Deleted", deleteHero);
+      result.put("deleted", deleteHero);
 
       if (deleteHero) {
          return ResponseEntity.ok(result);
