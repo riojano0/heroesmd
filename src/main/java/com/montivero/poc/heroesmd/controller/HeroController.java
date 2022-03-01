@@ -7,6 +7,8 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import io.swagger.annotations.Api;
+
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,7 @@ import com.montivero.poc.heroesmd.service.HeroService;
 
 @RestController
 @RequestMapping("hero")
+@Api(value = "Hero controller", description = "Endpoints use for Heroes")
 public class HeroController {
 
    private final HeroService heroService;

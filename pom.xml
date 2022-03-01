@@ -16,13 +16,16 @@
 
 	<properties>
 		<java.version>11</java.version>
+		<!--	Libs  	-->
 		<common.lang3.version>3.12.0</common.lang3.version>
 		<common.collection4.version>4.4</common.collection4.version>
+		<guava.version>31.0.1-jre</guava.version>
 		<mapstruct.version>1.4.2.Final</mapstruct.version>
+		<springfox.version>3.0.0</springfox.version>
+		<!--	Test 	-->
+		<hamcrest.version>2.2</hamcrest.version>
 		<mockito.version>3.0.0</mockito.version>
 		<rest-assured.version>4.1.2</rest-assured.version>
-		<hamcrest.version>2.2</hamcrest.version>
-		<guava.version>31.0.1-jre</guava.version>
 	</properties>
 
 	<dependencies>
@@ -41,6 +44,16 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-boot-starter</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${springfox.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>

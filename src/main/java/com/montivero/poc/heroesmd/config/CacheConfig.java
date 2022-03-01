@@ -16,7 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.google.common.cache.CacheBuilder;
 
 @Configuration
-public class Config {
+public class CacheConfig {
 
    @Bean
    @Scope(value = WebApplicationContext.SCOPE_APPLICATION, proxyMode = ScopedProxyMode.TARGET_CLASS)
