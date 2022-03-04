@@ -27,13 +27,13 @@ public class SkillEntity {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(updatable = false, nullable = false)
-   public Long id;
+   private Long id;
 
    @Column(nullable = false, unique = true)
-   public String name;
+   private String name;
 
    @Column(length = 300)
-   public String description;
+   private String description;
 
    @ManyToMany(mappedBy = "skills", fetch = FetchType.LAZY)
    @JsonBackReference // Use to avoid the circular reference

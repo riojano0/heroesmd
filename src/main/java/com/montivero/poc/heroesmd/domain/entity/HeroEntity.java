@@ -29,25 +29,25 @@ public class HeroEntity {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column
-   public Long id;
+   private Long id;
 
    @Column(nullable = false, unique = true)
-   public String name;
+   private String name;
 
    @Column(length = 300)
-   public String description;
+   private String description;
 
    @Column(name = "image_url")
-   public String imageUrl;
+   private String imageUrl;
 
    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}) // Allow to update and persist new Skills
    //Only use to set the column name convention
    @JoinTable(name = "hero_skills", joinColumns = @JoinColumn(name = "hero_id"),
          inverseJoinColumns = @JoinColumn(name = "skill_id"))
    @JsonManagedReference //This must be serialize
-   public List<SkillEntity> skills;
+   private List<SkillEntity> skills;
 
    @Column(name = "real_name")
-   public String realName;
+   private String realName;
 
 }
