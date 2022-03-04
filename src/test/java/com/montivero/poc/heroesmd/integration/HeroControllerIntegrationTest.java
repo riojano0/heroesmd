@@ -8,6 +8,7 @@ import java.time.Instant;
 import java.util.Map;
 
 import io.restassured.RestAssured;
+import io.restassured.authentication.PreemptiveBasicAuthScheme;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.response.Response;
@@ -28,7 +29,10 @@ import com.montivero.poc.heroesmd.domain.api.HeroResponse;
 @SpringBootTest(
    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-@TestPropertySource(locations = "classpath:application-test.properties")
+@TestPropertySource(locations = "classpath:application-test.properties", properties = {
+      "HEROES-USER=user",
+      "HEROES-PASSWORD=pass1"
+})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class HeroControllerIntegrationTest {
 
@@ -39,8 +43,12 @@ public class HeroControllerIntegrationTest {
 
    @BeforeEach
    void setUp() {
+      PreemptiveBasicAuthScheme authorization = new PreemptiveBasicAuthScheme();
+      authorization.setUserName("user");
+      authorization.setPassword("pass1");
       requestSpecification = new RequestSpecBuilder()
             .setPort(port)
+            .setAuth(authorization)
             .build();
 
       RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(LogDetail.BODY);
@@ -65,6 +73,8 @@ public class HeroControllerIntegrationTest {
       assertThat(heroResponses[0].getName(), is("ManolitonTest"));
       assertThat(heroResponses[1].getName(), is("JavieronTest"));
    }
+
+
 
    @Order(2)
    @Test
@@ -121,5 +131,27 @@ public class HeroControllerIntegrationTest {
       assertThat(response.getStatusCode(), is(200));
       Map<String, Boolean> result = response.getBody().as(Map.class);
       assertThat(result.get("deleted"), is(true));
+   }
+
+   @Test
+   void shouldFailWith401ToCreateHeroWhenCredentialsAreInvalid() {
+      requestSpecification = new RequestSpecBuilder()
+            .setPort(port)
+            .build();
+      HeroRequest heroRequest = new HeroRequest();
+      heroRequest.setName("NewHero");
+
+      Response response = RestAssured
+            .given(requestSpecification)
+            .contentType("application/json")
+            .when()
+            .body(heroRequest)
+            .post("/hero")
+            .then()
+            .log()
+            .all()
+            .extract().response();
+
+      assertThat(response.getStatusCode(), is(401));
    }
 }
