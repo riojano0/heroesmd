@@ -29,6 +29,7 @@
 		<hamcrest.version>2.2</hamcrest.version>
 		<mockito.version>3.0.0</mockito.version>
 		<rest-assured.version>4.1.2</rest-assured.version>
+		<jackson-dataformat-xml.version>2.13.1</jackson-dataformat-xml.version>
 	</properties>
 
 	<dependencies>
@@ -47,6 +48,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>${jackson-dataformat-xml.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>

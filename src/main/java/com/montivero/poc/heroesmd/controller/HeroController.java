@@ -1,13 +1,12 @@
 package com.montivero.poc.heroesmd.controller;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Sort;
@@ -25,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.montivero.poc.heroesmd.aspect.time.LogTimed;
+import com.montivero.poc.heroesmd.domain.api.DeleteHeroResponse;
 import com.montivero.poc.heroesmd.domain.api.HeroRequest;
 import com.montivero.poc.heroesmd.domain.api.HeroResponse;
 import com.montivero.poc.heroesmd.domain.api.PageContainer;
@@ -41,16 +41,18 @@ public class HeroController {
       this.heroService = heroService;
    }
 
+   @ApiOperation(value = "Get all heroes")
    @LogTimed
-   @GetMapping("/all")
+   @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
    @Cacheable("cache-by-seconds")
    public List<HeroResponse> getAllHeroes() {
       return heroService.getAllHeroes();
    }
 
 
+   @ApiOperation(value = "Get hero by ID")
    @LogTimed
-   @GetMapping
+   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
    @Cacheable("cache-by-seconds")
    public ResponseEntity<HeroResponse> getHero(@RequestParam(value = "id") Long id) {
       Optional<HeroResponse> heroByIdOptional = heroService.getHeroById(id);
@@ -59,8 +61,9 @@ public class HeroController {
             .orElse(ResponseEntity.notFound().build());
    }
 
+   @ApiOperation(value = "Get all heroes paginate order by ID")
    @LogTimed
-   @GetMapping("/page")
+   @GetMapping(value = "/page", produces = MediaType.APPLICATION_JSON_VALUE)
    @Cacheable("cache-by-seconds")
    public PageContainer<HeroResponse> getAllHeroesSlice(
          @RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -70,8 +73,9 @@ public class HeroController {
       return heroService.getAllHeroesSlice(page, size, direction);
    }
 
+   @ApiOperation(value = "Search heroes by query condition. Eg: ?q=name:m,description:from Chile&page=0&size=10")
    @LogTimed
-   @GetMapping("/search")
+   @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
    @Cacheable("cache-by-seconds")
    public PageContainer<HeroResponse> searchHeroes(
          @RequestParam(value = "q") String query,
@@ -82,31 +86,33 @@ public class HeroController {
       return heroService.searchHeroes(query, page, size, direction);
    }
 
+   @ApiOperation(value = "Create a new hero")
    @LogTimed
-   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
    public HeroResponse createHero(@RequestBody @Valid HeroRequest heroRequest) {
       return heroService.save(heroRequest);
    }
 
+   @ApiOperation(value = "Edit a hero")
    @LogTimed
-   @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+   @PutMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
    public HeroResponse editHero(@PathVariable("id") Long id, @RequestBody @Valid HeroRequest heroRequest) {
       return heroService.editHero(id, heroRequest);
    }
 
+   @ApiOperation(value = "Delete a hero")
    @LogTimed
-   @DeleteMapping(path = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-   public ResponseEntity<Object> editHero(@PathVariable("id") Long id) {
+   @DeleteMapping(path = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+   public ResponseEntity<DeleteHeroResponse> editHero(@PathVariable("id") Long id) {
       boolean deleteHero = heroService.deleteHero(id);
 
-      Map<String, Boolean> result = new HashMap<>();
-      result.put("deleted", deleteHero);
+      DeleteHeroResponse deleteHeroResponse = new DeleteHeroResponse(deleteHero);
 
       if (deleteHero) {
-         return ResponseEntity.ok(result);
+         return ResponseEntity.ok(deleteHeroResponse);
       }
 
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body(deleteHeroResponse);
    }
 
 }
