@@ -1,8 +1,10 @@
 package com.montivero.poc.heroesmd.config;
 
+import java.net.URI;
 import java.util.Collection;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJacksonValue;
@@ -24,19 +26,22 @@ public class JsonViewControllerAdvice extends AbstractMappingJacksonResponseBody
    protected void beforeBodyWriteInternal(MappingJacksonValue bodyContainer, MediaType contentType, MethodParameter returnType,
          ServerHttpRequest request, ServerHttpResponse response) {
 
-      SecurityContext context = SecurityContextHolder.getContext();
-      Authentication authentication = context.getAuthentication();
-      Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+      URI uri = request.getURI();
+      if (StringUtils.contains( uri.getPath(), "/hero")) {
 
-      if (CollectionUtils.isNotEmpty(authorities)) {
-         boolean hasAdminAuthority = authorities.stream()
-                                       .anyMatch(auth -> "ROLE_ADMIN".equalsIgnoreCase(auth.getAuthority()));
-         if (hasAdminAuthority) {
-            bodyContainer.setSerializationView(CustomJsonView.Admin.class);
-            return;
+         SecurityContext context = SecurityContextHolder.getContext();
+         Authentication authentication = context.getAuthentication();
+         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+         if (CollectionUtils.isNotEmpty(authorities)) {
+            boolean hasAdminAuthority = authorities.stream().anyMatch(auth -> "ROLE_ADMIN".equalsIgnoreCase(auth.getAuthority()));
+            if (hasAdminAuthority) {
+               bodyContainer.setSerializationView(CustomJsonView.Admin.class);
+               return;
+            }
          }
+         bodyContainer.setSerializationView(CustomJsonView.All.class);
       }
 
-      bodyContainer.setSerializationView(CustomJsonView.All.class);
    }
 }

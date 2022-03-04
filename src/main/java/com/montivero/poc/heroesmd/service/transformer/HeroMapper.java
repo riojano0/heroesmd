@@ -40,6 +40,7 @@ public interface HeroMapper {
       }
 
       HeroResponse heroResponse = new HeroResponse();
+      heroResponse.setId(heroEntity.getId());
       heroResponse.setName(heroEntity.getName());
       heroResponse.setDescription(heroEntity.getDescription());
       heroResponse.setImageUrl(heroEntity.getImageUrl());
