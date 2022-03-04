@@ -1,6 +1,7 @@
 package com.montivero.poc.heroesmd.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -18,4 +19,5 @@ public interface HeroRepository extends PagingAndSortingRepository<HeroEntity, L
    //Using slice to avoid the extra count(*)
    Slice<HeroEntity> findBy(Pageable pageable);
 
+   Optional<HeroEntity> findByName(String name);
 }

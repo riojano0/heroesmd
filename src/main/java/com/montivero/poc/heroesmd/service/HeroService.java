@@ -78,6 +78,9 @@ public class HeroService {
    }
 
    public HeroResponse save(HeroRequest heroRequest) {
+      String name = heroRequest.getName();
+      validateNameAlreadyExists(name);
+
       HeroEntity heroEntity = HeroMapper.INSTANCE.toEntity(heroRequest);
       List<SkillEntity> skillEntities = ListUtils.emptyIfNull(heroEntity.getSkills())
                                                  .stream()
@@ -97,6 +100,9 @@ public class HeroService {
    public HeroResponse editHero(Long id, HeroRequest heroRequest) {
 
       Optional<HeroEntity> optionalHeroEntity = heroRepository.findById(id);
+
+      String name = heroRequest.getName();
+      validateNameAlreadyExists(name);
 
       String invalidMessage = MessageFormat.format("Invalid Hero ID: {0}", id);
       HeroEntity heroEntity = optionalHeroEntity.orElseThrow(() -> new ValidationException(invalidMessage));
@@ -121,6 +127,14 @@ public class HeroService {
       Optional<HeroEntity> heroById = heroRepository.findById(id);
 
       return heroById.map(HeroMapper.INSTANCE::toResponse);
+   }
+
+   private void validateNameAlreadyExists(String name) {
+      Optional<HeroEntity> optionalCurrentHero = heroRepository.findByName(name);
+
+      if (optionalCurrentHero.isPresent()) {
+         throw new ValidationException("Hero with same name already exists: " + name);
+      }
    }
 
    private static PageContainer<HeroResponse> getHeroResponsePageContainer(Integer page, Integer size, Slice<HeroEntity> entitySlice) {
