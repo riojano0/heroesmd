@@ -3,6 +3,7 @@ package com.montivero.poc.heroesmd.integration;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
 
 import java.time.Instant;
 import java.util.Map;
@@ -15,12 +16,11 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 
 import com.montivero.poc.heroesmd.domain.api.HeroRequest;
@@ -33,7 +33,8 @@ import com.montivero.poc.heroesmd.domain.api.HeroResponse;
       "HEROES-USER=user",
       "HEROES-PASSWORD=pass1"
 })
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 public class HeroControllerIntegrationTest {
 
    @LocalServerPort
@@ -54,7 +55,6 @@ public class HeroControllerIntegrationTest {
       RestAssured.enableLoggingOfRequestAndResponseIfValidationFails(LogDetail.BODY);
    }
 
-   @Order(1)
    @Test
    void shouldGetAllHeroes() {
       Response response = RestAssured
@@ -70,13 +70,36 @@ public class HeroControllerIntegrationTest {
       assertThat(response.getStatusCode(), is(200));
       HeroResponse[] heroResponses = response.getBody().as(HeroResponse[].class);
       assertThat(heroResponses.length, is(2));
+      assertThat(heroResponses[0].getId(), is(1L));
       assertThat(heroResponses[0].getName(), is("ManolitonTest"));
+      assertThat(heroResponses[1].getId(), is(2L));
       assertThat(heroResponses[1].getName(), is("JavieronTest"));
    }
 
+   @Test
+   void shouldGetAllHeroesWithoutId() {
+      RequestSpecification requestSpecificationWithoutCredentials = new RequestSpecBuilder()
+            .setPort(port)
+            .build();
+      Response response = RestAssured
+            .given(requestSpecificationWithoutCredentials)
+            .contentType("application/json")
+            .when()
+            .get("/hero/all")
+            .then()
+            .log()
+            .all()
+            .extract().response();
 
+      assertThat(response.getStatusCode(), is(200));
+      HeroResponse[] heroResponses = response.getBody().as(HeroResponse[].class);
+      assertThat(heroResponses.length, is(2));
+      assertThat(heroResponses[0].getId(), nullValue());
+      assertThat(heroResponses[0].getName(), is("ManolitonTest"));
+      assertThat(heroResponses[1].getId(), nullValue());
+      assertThat(heroResponses[1].getName(), is("JavieronTest"));
+   }
 
-   @Order(2)
    @Test
    void shouldCreateHero() {
       HeroRequest heroRequest = new HeroRequest();
@@ -99,7 +122,6 @@ public class HeroControllerIntegrationTest {
       assertThat(heroResponses.getName(), is("NewHero"));
    }
 
-   @Order(3)
    @Test
    void shouldDeleteHeroCreatedHero() {
       HeroRequest heroRequest = new HeroRequest();
@@ -135,14 +157,14 @@ public class HeroControllerIntegrationTest {
 
    @Test
    void shouldFailWith401ToCreateHeroWhenCredentialsAreInvalid() {
-      requestSpecification = new RequestSpecBuilder()
+      RequestSpecification requestSpecificationWithoutCredentials = new RequestSpecBuilder()
             .setPort(port)
             .build();
       HeroRequest heroRequest = new HeroRequest();
       heroRequest.setName("NewHero");
 
       Response response = RestAssured
-            .given(requestSpecification)
+            .given(requestSpecificationWithoutCredentials)
             .contentType("application/json")
             .when()
             .body(heroRequest)

@@ -195,7 +195,7 @@ class HeroServiceTest {
       HeroEntity heroEntity = new HeroEntity();
       heroEntity.setId(99L);
       heroEntity.setName("Pedro");
-      heroEntity.setName("No-Pedro");
+      heroEntity.setRealName("No-Pedro");
 
       when(heroRepositoryMock.findById(99L)).thenReturn(Optional.of(heroEntity));
       when(heroRepositoryMock.save(any(HeroEntity.class)))

@@ -30,6 +30,7 @@ public class HeroResponse {
 
    public List<Skill> skills;
 
+   @JsonView(CustomJsonView.Admin.class)
    public String realName;
 
 }
