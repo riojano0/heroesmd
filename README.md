@@ -2,6 +2,18 @@
 
 ABM to manage Heroes
 
+# What is needed to be configured to work?
+
+Please note that to access the full ABM you will need to provide two environment variables for use all the crud operations 
+
+```
+HEROES-USER=
+HEROES-PASSWORD=
+```
+
+This will be your credentials to use with basic
+
+
 # Where see the API documentation?
 
 The most updated version is on swagger
