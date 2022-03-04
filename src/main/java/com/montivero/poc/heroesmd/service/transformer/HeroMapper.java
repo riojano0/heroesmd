@@ -11,14 +11,45 @@ import com.montivero.poc.heroesmd.domain.api.Skill;
 import com.montivero.poc.heroesmd.domain.entity.HeroEntity;
 import com.montivero.poc.heroesmd.domain.entity.SkillEntity;
 
+// Remove all MapStruct dependencies.
 @Mapper
 public interface HeroMapper {
 
    HeroMapper INSTANCE = Mappers.getMapper(HeroMapper.class);
 
-   HeroEntity toEntity(HeroRequest heroRequest);
+   default HeroEntity toEntity(HeroRequest heroRequest) {
+      if (heroRequest == null) {
+         return null;
+      }
 
-   HeroResponse toResponse(HeroEntity heroEntity);
+      HeroEntity heroEntity = new HeroEntity();
+      heroEntity.setName(heroRequest.getName());
+      heroEntity.setDescription(heroRequest.getDescription());
+      heroEntity.setImageUrl(heroRequest.getImageUrl());
+      List<Skill> skills = heroRequest.getSkills();
+      List<SkillEntity> skillEntities = toSkillEntityList(skills);
+      heroEntity.setSkills(skillEntities);
+      heroEntity.setRealName(heroRequest.getRealName());
+
+      return heroEntity;
+   };
+
+   default HeroResponse toResponse(HeroEntity heroEntity) {
+      if (heroEntity == null) {
+         return null;
+      }
+
+      HeroResponse heroResponse = new HeroResponse();
+      heroResponse.setName(heroEntity.getName());
+      heroResponse.setDescription(heroEntity.getDescription());
+      heroResponse.setImageUrl(heroEntity.getImageUrl());
+      List<SkillEntity> skills = heroEntity.getSkills();
+      List<Skill> skillList = toSkillResponseList(skills);
+      heroResponse.setSkills(skillList);
+      heroResponse.setRealName(heroEntity.getRealName());
+
+      return heroResponse;
+   };
 
    // Need for inner deserialization
    List<SkillEntity> toSkillEntityList(List<Skill> skill);
