@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
 
 import org.apache.commons.collections4.ListUtils;
 import org.springframework.http.HttpHeaders;
@@ -28,11 +29,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestControllerAdvice
-public class RestControllerHandler extends ResponseEntityExceptionHandler  {
+public class RestControllerExceptionHandler extends ResponseEntityExceptionHandler  {
 
    @Override
    public ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-      log.error(ex.getMessage(), ex);
+      log.error(ex.getMessage());
 
       BindingResult bindingResult = ex.getBindingResult();
       List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -54,19 +55,18 @@ public class RestControllerHandler extends ResponseEntityExceptionHandler  {
       return ResponseEntity.badRequest().body(build);
    }
 
+   @ExceptionHandler({ ValidationException.class })
+   public ResponseEntity<Object> handleValidationException(ValidationException ex, HttpServletRequest request) {
+      log.error(ex.getMessage());
+
+      return getSimpleBadRequest(ex, request);
+   }
+
    @ExceptionHandler({IllegalArgumentException.class })
    public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
-      log.error(ex.getMessage(), ex);
+      log.error(ex.getMessage());
 
-      String message = ex.getMessage();
-      ErrorResponse build = ErrorResponse.builder()
-                                         .date(LocalDateTime.now())
-                                         .message(message)
-                                         .path(request.getServletPath())
-                                         .detail(MethodArgumentNotValidException.class.getSimpleName())
-                                         .build();
-
-      return ResponseEntity.badRequest().body(build);
+      return getSimpleBadRequest(ex, request);
    }
 
    @ExceptionHandler({ SQLIntegrityConstraintViolationException.class })
@@ -77,11 +77,23 @@ public class RestControllerHandler extends ResponseEntityExceptionHandler  {
                                          .date(LocalDateTime.now())
                                          .message("Constraint violation")
                                          .path(request.getServletPath())
-                                         .detail(SQLIntegrityConstraintViolationException.class.getSimpleName())
+                                         .detail(ex.getClass().getSimpleName())
                                          .internalCode(Objects.toString(ex.getErrorCode()))
                                          .build();
 
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(build);
+   }
+
+   private ResponseEntity<Object> getSimpleBadRequest(Exception ex, HttpServletRequest request) {
+      String message = ex.getMessage();
+      ErrorResponse build = ErrorResponse.builder()
+                                         .date(LocalDateTime.now())
+                                         .message(message)
+                                         .path(request.getServletPath())
+                                         .detail(ex.getClass().getSimpleName())
+                                         .build();
+
+      return ResponseEntity.badRequest().body(build);
    }
 
 }
