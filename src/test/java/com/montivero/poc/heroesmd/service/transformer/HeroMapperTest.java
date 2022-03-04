@@ -46,14 +46,12 @@ class HeroMapperTest {
    @Test
    void shouldConvertToResponse() {
       SkillEntity skillEntity = new SkillEntity(1L, "x", "y", null);
-      HeroEntity heroEntity = HeroEntity
-            .builder()
-            .name("a")
-            .description("b")
-            .imageUrl("c")
-            .realName("d")
-            .skills(Collections.singletonList(skillEntity))
-            .build();
+      HeroEntity heroEntity = new HeroEntity();
+      heroEntity.setName("a");
+      heroEntity.setDescription("b");
+      heroEntity.setImageUrl("c");
+      heroEntity.setRealName("d");
+      heroEntity.setSkills(Collections.singletonList(skillEntity));
 
       HeroResponse heroResponse = HeroMapper.INSTANCE.toResponse(heroEntity);
 

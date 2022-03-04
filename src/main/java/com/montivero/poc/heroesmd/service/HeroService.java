@@ -84,7 +84,8 @@ public class HeroService {
                                                  .map(entity -> {
                                                    Optional<SkillEntity> byNameIgnoreCase = skillRepository
                                                          .findByNameIgnoreCase(entity.getName());
-                                                   return byNameIgnoreCase.orElse(entity);
+
+                                                    return byNameIgnoreCase.orElse(entity);
                                                  }).collect(Collectors.toList());
       heroEntity.setSkills(skillEntities);
 
@@ -151,8 +152,12 @@ public class HeroService {
          List<SkillEntity> skillEntities = new ArrayList<>();
          for (SkillEntity skillsToSave : skills) {
             Optional<SkillEntity> byNameIgnoreCase = skillRepository.findByNameIgnoreCase(skillsToSave.getName());
-            skillEntities.add(byNameIgnoreCase
-                  .orElse(skillsToSave));
+
+            if (byNameIgnoreCase.isPresent()) {
+               skillEntities.add(byNameIgnoreCase.get());
+            } else {
+               skillEntities.add(skillsToSave);
+            }
          }
          heroEntity.setSkills(skillEntities);
       }

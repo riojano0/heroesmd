@@ -23,8 +23,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.SliceImpl;
@@ -59,9 +57,12 @@ class HeroServiceTest {
 
    @Test
    void shouldGetAllTheHeroes() {
-      List<HeroEntity> heroEntities = Arrays.asList(
-            HeroEntity.builder().name("M0").build(),
-            HeroEntity.builder().name("M1").build());
+      HeroEntity heroEntityM0 = new HeroEntity();
+      heroEntityM0.setName("M0");
+      HeroEntity heroEntityM1 = new HeroEntity();
+      heroEntityM1.setName("M1");
+      List<HeroEntity> heroEntities = Arrays.asList(heroEntityM0, heroEntityM1);
+
       when(heroRepositoryMock.findAll()).thenReturn(heroEntities);
 
       List<HeroResponse> allHeroes = heroService.getAllHeroes();
@@ -74,9 +75,11 @@ class HeroServiceTest {
 
    @Test
    void shouldGetHeroesSliceOnPageContainer() {
-      List<HeroEntity> heroEntities = Arrays.asList(
-            HeroEntity.builder().name("M0").build(),
-            HeroEntity.builder().name("M1").build());
+      HeroEntity heroEntityM0 = new HeroEntity();
+      heroEntityM0.setName("M0");
+      HeroEntity heroEntityM1 = new HeroEntity();
+      heroEntityM1.setName("M1");
+      List<HeroEntity> heroEntities = Arrays.asList(heroEntityM0, heroEntityM1);
       int page = 0;
       int size = 2;
       Sort.Direction direction = Sort.Direction.ASC;
@@ -100,9 +103,11 @@ class HeroServiceTest {
    @Test
    void shouldSearchHeroesSliceOnPageContainer() {
       ArgumentCaptor<Specification<HeroEntity>> specificationCaptor = ArgumentCaptor.forClass(Specification.class);
-      List<HeroEntity> heroEntities = Arrays.asList(
-            HeroEntity.builder().name("M0").build(),
-            HeroEntity.builder().name("M1").build());
+      HeroEntity heroEntityM0 = new HeroEntity();
+      heroEntityM0.setName("M0");
+      HeroEntity heroEntityM1 = new HeroEntity();
+      heroEntityM1.setName("M1");
+      List<HeroEntity> heroEntities = Arrays.asList(heroEntityM0, heroEntityM1);
       int page = 0;
       int size = 2;
       Sort.Direction direction = Sort.Direction.ASC;
@@ -187,8 +192,10 @@ class HeroServiceTest {
    @Test
    void shouldEditHero() {
       ArgumentCaptor<HeroEntity> heroEntityArgumentCaptor = ArgumentCaptor.forClass(HeroEntity.class);
-      HeroEntity heroEntity = HeroEntity.builder().name("Pedro").realName("No-Pedro").build();
+      HeroEntity heroEntity = new HeroEntity();
       heroEntity.setId(99L);
+      heroEntity.setName("Pedro");
+      heroEntity.setName("No-Pedro");
 
       when(heroRepositoryMock.findById(99L)).thenReturn(Optional.of(heroEntity));
       when(heroRepositoryMock.save(any(HeroEntity.class)))
