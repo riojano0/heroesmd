@@ -16,14 +16,14 @@ import lombok.NoArgsConstructor;
 public class HeroRequest {
 
    @NotBlank
-   public String name;
+   private String name;
 
-   public String description;
+   private String description;
 
-   public String imageUrl;
+   private String imageUrl;
 
-   public List<Skill> skills;
+   private List<Skill> skills;
 
-   public String realName;
+   private String realName;
 
 }

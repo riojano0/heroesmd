@@ -20,17 +20,17 @@ import lombok.NoArgsConstructor;
 public class HeroResponse {
 
    @JsonView(CustomJsonView.Admin.class)
-   public Long id;
+   private Long id;
 
-   public String name;
+   private String name;
 
-   public String description;
+   private String description;
 
-   public String imageUrl;
+   private String imageUrl;
 
-   public List<Skill> skills;
+   private List<Skill> skills;
 
    @JsonView(CustomJsonView.Admin.class)
-   public String realName;
+   private String realName;
 
 }
