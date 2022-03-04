@@ -36,3 +36,9 @@ Check on your target folder what is the correct version
 # How to run Docker Image
 
 ```docker run --name heroesmd-image -h heroesmd heroesmd```
+
+# See demo on Heroku
+
+[HeroesMd - Swagger on Heroku](https://heroesmd.herokuapp.com/swagger-ui/)
+
+Disclaimer: Remember that the instances from Heroku take a while to start the first time
