@@ -26,7 +26,7 @@ public class CacheConfig {
          protected Cache createConcurrentMapCache(String name) {
             return new ConcurrentMapCache(name,
                   CacheBuilder.newBuilder()
-                              .expireAfterWrite(30, TimeUnit.SECONDS)
+                              .expireAfterWrite(5, TimeUnit.SECONDS)
                               .maximumSize(100)
                               .build()
                               .asMap(),
