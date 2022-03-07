@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.validation.ValidationException;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -84,7 +85,7 @@ public class HeroService {
       HeroEntity heroEntity = HeroMapper.INSTANCE.toEntity(heroRequest);
       List<SkillEntity> skillEntities = ListUtils.emptyIfNull(heroEntity.getSkills())
                                                  .stream()
-                                                 .map(entity -> {
+                                                 .map((@Nonnull var entity) -> {
                                                    Optional<SkillEntity> byNameIgnoreCase = skillRepository
                                                          .findByNameIgnoreCase(entity.getName());
 
